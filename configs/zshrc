@@ -25,8 +25,17 @@ if [[ -d "$HOME/.local/share/fnm" ]]; then
   eval "$(fnm env --use-on-cd --shell zsh)"
 fi
 
-# Homebrew
+# Homebrew - binaries are available to all users via PATH
 eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# If we're not the Homebrew owner, run brew commands as the owner (via sudo -Hu).
+# This is the only reliable way to share a single Homebrew installation.
+# The sudoers rule is set up by scripts/00-fix-brew-permissions.sh.
+_brew_owner="$(stat -f '%Su' /opt/homebrew/bin/brew)"
+if [[ "$_brew_owner" != "$(whoami)" ]]; then
+  alias brew="sudo -Hu $_brew_owner /opt/homebrew/bin/brew"
+fi
+unset _brew_owner
 
 # Aliases
 alias ll="ls -la"

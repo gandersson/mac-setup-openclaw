@@ -5,14 +5,16 @@ Automated setup for a dedicated `ai-assistant` macOS user account running OpenCl
 ## Prerequisites
 
 The `ai-assistant` user **must be an admin** on the Mac. This is required because:
-- Homebrew sharing relies on the `admin` group for `/opt/homebrew` permissions
 - Cask apps (VS Code, Ghostty, etc.) install to `/Applications` which requires admin rights
+- The sudoers rule for Homebrew requires an admin user to set up
 
 When creating the user in System Settings > Users & Groups, make sure "Allow user to administer this computer" is enabled.
 
 ## Quick Start
 
-### 1. Fix Homebrew permissions (run as admin, one-time)
+### 1. Set up Homebrew sharing (run as the primary admin user, one-time)
+
+This creates a sudoers rule so the `ai-assistant` user can run `brew` commands without permission issues:
 
 ```bash
 bash scripts/00-fix-brew-permissions.sh
@@ -31,8 +33,8 @@ chmod +x setup.sh scripts/*.sh
 
 | Step | Script | What |
 |------|--------|------|
-| 00 | `fix-brew-permissions.sh` | Shared Homebrew access (admin only) |
-| 01 | `brew-install.sh` | Homebrew + Brewfile packages |
+| 00 | `fix-brew-permissions.sh` | Sudoers rule for shared Homebrew (admin only) |
+| 01 | `brew-install.sh` | Homebrew update + Brewfile packages |
 | 02 | `node-setup.sh` | fnm + Node.js 22 (per-user) |
 | 03 | `shell-setup.sh` | oh-my-zsh, powerlevel10k, plugins |
 | 04 | `ghostty-setup.sh` | Ghostty terminal config |
@@ -53,7 +55,7 @@ chmod +x setup.sh scripts/*.sh
 See [docs/MULTI-USER-BREW.md](docs/MULTI-USER-BREW.md) for details on the multi-user Homebrew approach.
 
 Key design choices:
-- **Shared Homebrew** at `/opt/homebrew` with group permissions
+- **Shared Homebrew** via `sudo -Hu` (the only approach that doesn't break over time)
 - **Per-user Node.js** via fnm (no brew node collisions)
 - **Per-user shell** config (oh-my-zsh, p10k, plugins)
 - **Minimal Brewfile** - only what the OpenClaw user needs
