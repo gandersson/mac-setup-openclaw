@@ -18,7 +18,17 @@ fi
 echo "Updating Homebrew ..."
 brew update
 
+# When running brew as another user, they can't read files in our home dir.
+# Copy the Brewfile to /tmp so the brew owner can access it.
+BREWFILE="$REPO_DIR/Brewfile"
+if [[ "$(whoami)" != "$BREW_OWNER" ]]; then
+  BREWFILE="/tmp/Brewfile.$$"
+  cp "$REPO_DIR/Brewfile" "$BREWFILE"
+  chmod 644 "$BREWFILE"
+  trap 'rm -f "$BREWFILE"' EXIT
+fi
+
 echo "Installing packages from Brewfile ..."
-brew bundle --file="$REPO_DIR/Brewfile"
+brew bundle --file="$BREWFILE"
 
 echo "Brew setup complete."
