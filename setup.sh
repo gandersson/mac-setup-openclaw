@@ -61,7 +61,7 @@ should_run() {
     [[ "$ONLY" == "$step" ]]
     return
   fi
-  for s in "${SKIP[@]}"; do
+  for s in "${SKIP[@]+"${SKIP[@]}"}"; do
     [[ "$s" == "$step" ]] && return 1
   done
   return 0
