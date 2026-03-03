@@ -2,6 +2,14 @@
 
 Automated setup for a dedicated `ai-assistant` macOS user account running OpenClaw.
 
+## Prerequisites
+
+The `ai-assistant` user **must be an admin** on the Mac. This is required because:
+- Homebrew sharing relies on the `admin` group for `/opt/homebrew` permissions
+- Cask apps (VS Code, Ghostty, etc.) install to `/Applications` which requires admin rights
+
+When creating the user in System Settings > Users & Groups, make sure "Allow user to administer this computer" is enabled.
+
 ## Quick Start
 
 ### 1. Fix Homebrew permissions (run as admin, one-time)
