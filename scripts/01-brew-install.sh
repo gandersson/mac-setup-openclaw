@@ -19,6 +19,6 @@ echo "Updating Homebrew ..."
 brew update
 
 echo "Installing packages from Brewfile ..."
-brew bundle --file="$REPO_DIR/Brewfile" --no-lock
+brew bundle --file="$REPO_DIR/Brewfile"
 
 echo "Brew setup complete."
